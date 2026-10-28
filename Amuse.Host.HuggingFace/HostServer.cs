@@ -51,7 +51,7 @@ namespace Amuse.Host.HuggingFace
                 var timestamp = Stopwatch.GetTimestamp();
                 var environmentRequest = request.CreateOptions;
                 var pythonOptions = request.CreateOptions.ToPythonOptions();
-                var pythonEnvironment = new HuggingFaceBackend(pythonOptions, _progressCallback);
+                var pythonEnvironment = new HuggingFaceBackend(pythonOptions, _progressCallback, Logger);
                 if (environmentRequest.Status == TensorStack.Common.BackendStatus.Load || (environmentRequest.Status == TensorStack.Common.BackendStatus.Create && pythonEnvironment.Exists()))
                 {
                     Logger.LogInformation("[PipelineServer] [CreatePipeline] Loading existing environment...");

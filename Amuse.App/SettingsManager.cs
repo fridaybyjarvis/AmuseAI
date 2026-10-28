@@ -203,6 +203,7 @@ namespace Amuse.App
                                 defaultDiffusionModel.Status = diffusionModel.Status;
                                 defaultDiffusionModel.UserQualityMode = diffusionModel.UserQualityMode;
                                 defaultDiffusionModel.UserMemoryMode = diffusionModel.UserMemoryMode;
+                                defaultDiffusionModel.UserExecutionOptions = diffusionModel.UserExecutionOptions;
                             }
                         }
                     }
@@ -227,6 +228,7 @@ namespace Amuse.App
                                 // Merge any user settings
                                 defaultDiffusionModel.Status = languageModel.Status;
                                 defaultDiffusionModel.UserQualityMode = languageModel.UserQualityMode;
+                                defaultDiffusionModel.UserExecutionOptions = languageModel.UserExecutionOptions;
                             }
                         }
                     }

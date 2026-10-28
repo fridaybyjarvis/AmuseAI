@@ -23,7 +23,9 @@ namespace Amuse.Host.StableDiffusionCpp
         {
             var backendType = GetBackendType(options);
             var backendDevice = GetBackend(pipelineOptions, backendType);
-            var paramsBackend = GetParamsBackend(pipelineOptions, backendType);
+            var paramsBackend = GetParamsBackend(pipelineOptions);
+            var convDirectMode = GetConvDirect(pipelineOptions);
+            var flashAttnMode = GetFlashAttention(pipelineOptions);
             var contextOptions = new PipelineCommon.ContextOptions
             {
                 Backend = backendDevice,
@@ -32,11 +34,11 @@ namespace Amuse.Host.StableDiffusionCpp
                 SamplerRngType = Pipeline.RngType.CPU,
 
                 // Memory
-                MaxVram = "-1",
+                MaxVram = $"-{pipelineOptions.ExecutionOptions.MemoryReserve}",
                 DataType = Pipeline.DataType.Default,
                 EagerLoad = false,
-                IsPrefetchEnabled = true,
-                IsSegmentedComputeEnabled = true,
+                IsPrefetchEnabled = pipelineOptions.ExecutionOptions.IsPrefetchEnabled,
+                IsSegmentedComputeEnabled = pipelineOptions.ExecutionOptions.IsSegmentedComputeEnabled,
                 AutoFit = pipelineOptions.MemoryMode == MemoryModeType.Balanced,
 
                 // Misc
@@ -44,8 +46,9 @@ namespace Amuse.Host.StableDiffusionCpp
                 LoraApplyMode = Pipeline.LoraApplyType.AtRuntime,
                 PreviewType = Pipeline.PreviewType.Projection,
                 ConditioningCacheSize = 1,
-                FlashAttnMode = "auto", //TODO
-                ConvDirectMode = "auto" //TODO
+                FlashAttnMode = flashAttnMode,
+                ConvDirectMode = convDirectMode,
+                SageAttn = pipelineOptions.ExecutionOptions.IsSageAttentionEnabled
             };
 
 
@@ -340,7 +343,12 @@ namespace Amuse.Host.StableDiffusionCpp
             var deviceId = backendType == Pipeline.SDBackendType.Vulkan
                 ? pipelineOptions.DeviceId
                 : pipelineOptions.DeviceVendorIndex;
-            return $"{backendType.GetShortName()}{deviceId}";
+
+            var diffusionDevice = $"{backendType.GetShortName()}{deviceId}";
+            var autoEncoderDevice = pipelineOptions.ExecutionOptions.IsAutoEncoderCpuEnabled ? "cpu" : diffusionDevice;
+            var textEncoderDevice = pipelineOptions.ExecutionOptions.IsTextEncoderCpuEnabled ? "cpu" : diffusionDevice;
+            var controlnetDevice = pipelineOptions.ExecutionOptions.IsControlNetCpuEnabled ? "cpu" : diffusionDevice;
+            return $"*={diffusionDevice},vae={autoEncoderDevice},te={textEncoderDevice},clip_vision={textEncoderDevice},audio_encoder={controlnetDevice},controlnet={autoEncoderDevice}";
         }
 
 
@@ -348,14 +356,39 @@ namespace Amuse.Host.StableDiffusionCpp
         /// Gets the parameters backend.
         /// </summary>
         /// <param name="pipelineOptions">The pipeline options.</param>
-        /// <param name="backendType">Type of the backend.</param>
-        private static string GetParamsBackend(PipelineLoadOptions pipelineOptions, Pipeline.SDBackendType backendType)
+        private static string GetParamsBackend(PipelineLoadOptions pipelineOptions)
         {
-            if (pipelineOptions.MemoryMode == MemoryModeType.OffloadCPU || pipelineOptions.MemoryMode == MemoryModeType.OffloadModel)
+            if (pipelineOptions.MemoryMode == MemoryModeType.OffloadModel)
             {
-                return "*=cpu,vae=disk,te=disk,clip_vision=disk";
+                return "*=cpu,vae=cpu,te=cpu,clip_vision=cpu,audio_encoder=cpu,controlnet=cpu";
+            }
+            else if (pipelineOptions.MemoryMode == MemoryModeType.OffloadCPU)
+            {
+                return "*=cpu,vae=disk,te=disk,clip_vision=disk,audio_encoder=disk,controlnet=disk";
             }
             return string.Empty;
+        }
+
+
+        /// <summary>
+        /// Gets the flash attention config.
+        /// </summary>
+        /// <param name="pipelineOptions">The pipeline options.</param>
+        private static string GetFlashAttention(PipelineLoadOptions pipelineOptions)
+        {
+            var options = pipelineOptions.ExecutionOptions;
+            return $"diffusion={options.DiffusionFlashAttention.GetShortName()},vae={options.AutoEncoderFlashAttention.GetShortName()},te={options.TextEncoderFlashAttention.GetShortName()},clip_vision={options.TextEncoderFlashAttention.GetShortName()},audio_encoder={options.AutoEncoderFlashAttention.GetShortName()},controlnet={options.ControlNetFlashAttention.GetShortName()}";
+        }
+
+
+        /// <summary>
+        /// Gets the conv direct config.
+        /// </summary>
+        /// <param name="pipelineOptions">The pipeline options.</param>
+        private static string GetConvDirect(PipelineLoadOptions pipelineOptions)
+        {
+            var options = pipelineOptions.ExecutionOptions;
+            return $"diffusion={options.DiffusionConvDirect.GetShortName()},vae={options.AutoEncoderConvDirect.GetShortName()},controlnet={options.ControlNetConvDirect.GetShortName()}";
         }
 
 

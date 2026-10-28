@@ -593,7 +593,6 @@ namespace Amuse.App.Runtime
         private PipelineLoadOptions GetPipelineLoadOptions(DiffusionModel model)
         {
             var device = Pipeline.Device;
-            var isFlashAttentionEnabled = model.DefaultOptions.IsFlashAttentionEnabled && device.IsFlashAttentionEnabled;
             return new PipelineLoadOptions
             {
                 Variant = model.Variant,
@@ -611,12 +610,12 @@ namespace Amuse.App.Runtime
                 IsOptimizeDeviceEnabled = Settings.IsOptimizeDeviceEnabled,
                 IsOptimizeChannelsEnabled = Settings.IsOptimizeChannelsEnabled,
                 IsDeviceQuantizationEnabled = Settings.IsDeviceQuantizationEnabled,
-                IsFlashAttentionEnabled = isFlashAttentionEnabled,
                 MemoryMode = GetMemoryMode(model.MemoryProfile),
                 QuantType = GetQuantizationType(),
                 ControlNet = ControlNetConfig(),
                 LoraAdapters = GetLoraAdapters(),
-                CheckpointConfig = GetCheckpoint(model.Checkpoint, Settings.DirectoryDiffusion)
+                CheckpointConfig = GetCheckpoint(model.Checkpoint, Settings.DirectoryDiffusion),
+                ExecutionOptions = GetExecutionOptions()
             };
         }
 
@@ -624,7 +623,6 @@ namespace Amuse.App.Runtime
         private PipelineLoadOptions GetPipelineLoadOptions(LanguageModel model)
         {
             var device = Pipeline.Device;
-            var isFlashAttentionEnabled = model.DefaultOptions.IsFlashAttentionEnabled && device.IsFlashAttentionEnabled;
             return new PipelineLoadOptions
             {
                 Variant = model.Variant,
@@ -641,11 +639,11 @@ namespace Amuse.App.Runtime
                 IsOptimizeDeviceEnabled = Settings.IsOptimizeDeviceEnabled,
                 IsOptimizeChannelsEnabled = Settings.IsOptimizeChannelsEnabled,
                 IsDeviceQuantizationEnabled = Settings.IsDeviceQuantizationEnabled,
-                IsFlashAttentionEnabled = isFlashAttentionEnabled,
                 MemoryMode = MemoryModeType.Device,
                 QuantType = GetQuantizationType(),
                 LoraAdapters = GetLoraAdapters(),
-                CheckpointConfig = GetCheckpoint(model.Checkpoint, Settings.DirectoryLangaugeModel)
+                CheckpointConfig = GetCheckpoint(model.Checkpoint, Settings.DirectoryLangaugeModel),
+                ExecutionOptions = GetExecutionOptions()
             };
         }
 
@@ -763,6 +761,30 @@ namespace Amuse.App.Runtime
                 Invert = model.Invert,
                 LayerCount = model.LayerCount,
                 DisableProjections = model.DisableProjections
+            };
+        }
+
+
+        private ExecutionOptions GetExecutionOptions()
+        {
+            var options = Pipeline.ExecutionOptions;
+            return new ExecutionOptions
+            {
+                IsPrefetchEnabled = options.IsPrefetchEnabled,
+                IsSegmentedComputeEnabled = options.IsSegmentedComputeEnabled,
+                MemoryReserve = options.MemoryReserve,
+                IsControlNetCpuEnabled = options.IsControlNetCpuEnabled,
+                IsAutoEncoderCpuEnabled = options.IsAutoEncoderCpuEnabled,
+                IsTextEncoderCpuEnabled = options.IsTextEncoderCpuEnabled,
+                DiffusionConvDirect = options.DiffusionConvDirect,
+                ControlNetConvDirect = options.ControlNetConvDirect,
+                AutoEncoderConvDirect = options.AutoEncoderConvDirect,
+                TextEncoderConvDirect = options.TextEncoderConvDirect,
+                DiffusionFlashAttention = options.DiffusionFlashAttention,
+                ControlNetFlashAttention = options.ControlNetFlashAttention,
+                AutoEncoderFlashAttention = options.AutoEncoderFlashAttention,
+                TextEncoderFlashAttention = options.TextEncoderFlashAttention,
+                IsSageAttentionEnabled = options.IsSageAttentionEnabled,
             };
         }
 

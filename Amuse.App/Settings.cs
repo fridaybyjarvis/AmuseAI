@@ -228,6 +228,7 @@ namespace Amuse.App
 
                 pipeline.DiffusionModel.UserQualityMode = pipeline.QualityMode;
                 pipeline.DiffusionModel.UserMemoryMode = pipeline.MemoryMode;
+                pipeline.DiffusionModel.UserExecutionOptions = pipeline.ExecutionOptions;
                 pipeline.DiffusionModel.IsDefault = true;
             }
             if (pipeline.LanguageModel != null)
@@ -238,6 +239,7 @@ namespace Amuse.App
 
                 pipeline.LanguageModel.UserQualityMode = pipeline.QualityMode;
                 //pipeline.LanguageModel.UserMemoryMode = pipeline.MemoryMode;
+                pipeline.LanguageModel.UserExecutionOptions = pipeline.ExecutionOptions;
                 pipeline.LanguageModel.IsDefault = true;
             }
             if (pipeline.UpscaleModel != null)

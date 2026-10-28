@@ -18,6 +18,8 @@ namespace Amuse.App.Common
         private ProcessType _processType;
         private View _viewType;
         private QualityMode _qualityMode;
+        private ExecutionOptionsModel _executionOptions;
+
         public DeviceModel Device
         {
             get { return _device; }
@@ -94,6 +96,13 @@ namespace Amuse.App.Common
             get { return _qualityMode; }
             set { SetProperty(ref _qualityMode, value); }
         }
+      
+        public ExecutionOptionsModel ExecutionOptions
+        {
+            get { return _executionOptions; }
+            set { SetProperty(ref _executionOptions, value); }
+        }
+
 
         public bool IsLoadRequired(PipelineModel pipeline)
         {
@@ -102,7 +111,8 @@ namespace Amuse.App.Common
                 || pipeline.DiffusionModel != _diffusionModel
                 || pipeline.LanguageModel != _languageModel
                 || pipeline.MemoryMode != _memoryMode
-                || pipeline.QualityMode != _qualityMode;
+                || pipeline.QualityMode != _qualityMode
+                || pipeline.ExecutionOptions != _executionOptions;
         }
 
 

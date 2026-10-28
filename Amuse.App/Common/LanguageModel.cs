@@ -32,6 +32,7 @@ namespace Amuse.App.Common
         private string _link;
         private ModelStatusType _status;
         private QualityMode? _userQualityMode;
+        private ExecutionOptionsModel _userExecutionOptions;
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
         public int Id { get; set; }
@@ -163,12 +164,18 @@ namespace Amuse.App.Common
             set { SetProperty(ref _link, value); }
         }
 
-
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public QualityMode? UserQualityMode
         {
             get { return _userQualityMode; }
             set { SetProperty(ref _userQualityMode, value); }
+        }
+
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        public ExecutionOptionsModel UserExecutionOptions
+        {
+            get { return _userExecutionOptions; }
+            set { SetProperty(ref _userExecutionOptions, value); }
         }
 
 

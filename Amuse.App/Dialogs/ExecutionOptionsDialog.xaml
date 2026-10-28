@@ -1,0 +1,107 @@
+﻿<CommonControls:DialogControl x:Class="Amuse.App.Dialogs.ExecutionOptionsDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Amuse.App.Dialogs"
+        xmlns:Controls="clr-namespace:Amuse.App.Controls"
+        xmlns:CommonControls="clr-namespace:TensorStack.WPF.Controls;assembly=TensorStack.WPF"
+        MinWidth="500"
+        MaxWidth="600"
+        Title="Execution Options"
+        Icon="/Images/Icon.ico"
+        Style="{StaticResource {x:Type CommonControls:DialogControl}}">
+    <DockPanel DataContext="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:ExecutionOptionsDialog}}}" Margin="15, 15, 15, 10">
+
+        <!--Save/Cancel/Errors-->
+        <DockPanel DockPanel.Dock="Bottom" Height="30" Margin="0,15,0,0">
+            <UniformGrid DockPanel.Dock="Right" Columns="2" >
+                <Button Content="{CommonControls:Localize Save}" Command="{Binding SaveCommand}" Width="100" IsDefault="True"/>
+                <Button Content="{CommonControls:Localize Cancel}" Command="{Binding CancelCommand}"/>
+            </UniformGrid>
+            <ItemsControl ItemsSource="{Binding Errors}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding}" Foreground="IndianRed" TextWrapping="Wrap" FontSize="11"/>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </DockPanel>
+
+        <!--Main Content-->
+        <StackPanel>
+
+            <!--Memory-->
+            <GroupBox Header="Memory" Margin="0, 0, 0, 0" Padding="5,2,5,5">
+                <UniformGrid Columns="3">
+                    <StackPanel Margin="0, 6, 0, 0">
+                        <CheckBox Content="Segment Prefetch" IsChecked="{Binding ExecutionOptions.IsPrefetchEnabled}"  />
+                        <CheckBox Content="Segmented Compute" IsChecked="{Binding ExecutionOptions.IsSegmentedComputeEnabled}"  />
+                    </StackPanel>
+                    <StackPanel></StackPanel>
+                    <StackPanel>
+                        <TextBlock Text="Memory Reserve (GB)" Style="{StaticResource FieldTextBlockStyle}"/>
+                        <TextBox Text="{Binding ExecutionOptions.MemoryReserve}"/>
+                    </StackPanel>
+                </UniformGrid>
+            </GroupBox>
+
+            <!--Flash Attention-->
+            <GroupBox Header="Flash Attention" Margin="0, 10, 0, 0" Padding="5">
+                <StackPanel>
+                    <UniformGrid Columns="4">
+                        <StackPanel>
+                            <TextBlock Text="Diffusion" Style="{StaticResource FieldTextBlockStyle}"/>
+                            <ComboBox ItemsSource="{Binding Source={StaticResource AutoOption}}" SelectedItem="{Binding ExecutionOptions.DiffusionFlashAttention}" Style="{StaticResource EnumComboBox}"/>
+                        </StackPanel>
+                        <StackPanel Margin="4,0,0,0">
+                            <TextBlock Text="AutoEncoder" Style="{StaticResource FieldTextBlockStyle}"/>
+                            <ComboBox ItemsSource="{Binding Source={StaticResource AutoOption}}" SelectedItem="{Binding ExecutionOptions.AutoEncoderFlashAttention}" Style="{StaticResource EnumComboBox}"/>
+                        </StackPanel>
+                        <StackPanel Margin="4,0,0,0">
+                            <TextBlock Text="TextEncoder" Style="{StaticResource FieldTextBlockStyle}"/>
+                            <ComboBox ItemsSource="{Binding Source={StaticResource AutoOption}}" SelectedItem="{Binding ExecutionOptions.TextEncoderFlashAttention}" Style="{StaticResource EnumComboBox}"/>
+                        </StackPanel>
+                        <StackPanel Margin="4,0,0,0">
+                            <TextBlock Text="ControlNet" Style="{StaticResource FieldTextBlockStyle}"/>
+                            <ComboBox ItemsSource="{Binding Source={StaticResource AutoOption}}" SelectedItem="{Binding ExecutionOptions.ControlNetFlashAttention}" Style="{StaticResource EnumComboBox}"/>
+                        </StackPanel>
+                    </UniformGrid>
+                    <CheckBox Content="Enable Sage Attention" IsChecked="{Binding ExecutionOptions.IsSageAttentionEnabled}"  Margin="0,6,0,0"/>
+                </StackPanel>
+            </GroupBox>
+
+            <!--Conv-Direct-->
+            <GroupBox Header="Conv-Direct" Margin="0, 10, 0, 0" Padding="5">
+                <UniformGrid Columns="4">
+                    <StackPanel>
+                        <TextBlock Text="Diffusion" Style="{StaticResource FieldTextBlockStyle}"/>
+                        <ComboBox ItemsSource="{Binding Source={StaticResource AutoOption}}" SelectedItem="{Binding ExecutionOptions.DiffusionConvDirect}" Style="{StaticResource EnumComboBox}"/>
+                    </StackPanel>
+                    <StackPanel Margin="4,0,0,0">
+                        <TextBlock Text="AutoEncoder" Style="{StaticResource FieldTextBlockStyle}"/>
+                        <ComboBox ItemsSource="{Binding Source={StaticResource AutoOption}}" SelectedItem="{Binding ExecutionOptions.AutoEncoderConvDirect}" Style="{StaticResource EnumComboBox}"/>
+                    </StackPanel>
+                    <StackPanel Margin="4,0,0,0">
+                        <TextBlock Text="TextEncoder" Style="{StaticResource FieldTextBlockStyle}"/>
+                        <ComboBox ItemsSource="{Binding Source={StaticResource AutoOption}}" SelectedItem="{Binding ExecutionOptions.TextEncoderConvDirect}" Style="{StaticResource EnumComboBox}"/>
+                    </StackPanel>
+                    <StackPanel Margin="4,0,0,0">
+                        <TextBlock Text="ControlNet" Style="{StaticResource FieldTextBlockStyle}"/>
+                        <ComboBox ItemsSource="{Binding Source={StaticResource AutoOption}}" SelectedItem="{Binding ExecutionOptions.ControlNetConvDirect}" Style="{StaticResource EnumComboBox}"/>
+                    </StackPanel>
+                </UniformGrid>
+            </GroupBox>
+
+            <!--CPU Execution-->
+            <GroupBox Header="CPU Execution" Margin="0, 10, 0, 0" Padding="5">
+                <UniformGrid Columns="3">
+                    <CheckBox Content="ControlNet" IsChecked="{Binding ExecutionOptions.IsControlNetCpuEnabled}"  />
+                    <CheckBox Content="TextEncoder" IsChecked="{Binding ExecutionOptions.IsTextEncoderCpuEnabled}" HorizontalAlignment="Center" />
+                    <CheckBox Content="AutoEncoder" IsChecked="{Binding ExecutionOptions.IsAutoEncoderCpuEnabled}" HorizontalAlignment="Right" />
+                </UniformGrid>
+            </GroupBox>
+        </StackPanel>
+
+    </DockPanel>
+</CommonControls:DialogControl>

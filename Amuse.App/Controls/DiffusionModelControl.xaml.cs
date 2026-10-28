@@ -38,6 +38,7 @@ namespace Amuse.App.Controls
         private UpscaleModel _selectedUpscaler;
         private MemoryProfileModel _selectedMemoryMode;
         private QualityMode _selectedQualityMode;
+        private ExecutionOptionsModel _selectedExecutionOptions;
 
         private bool _isControlNetSupported;
         private bool _isControlNetEnabled;
@@ -57,6 +58,7 @@ namespace Amuse.App.Controls
         private UpscaleModel _currentUpscaler;
         private MemoryMode _currentMemoryMode;
         private QualityMode _currentQualityMode;
+        private ExecutionOptionsModel _currentExecutionOptions;
 
         private bool _currentControlNetEnabled;
         private bool _currentUpscalerEnabled;
@@ -82,6 +84,7 @@ namespace Amuse.App.Controls
             InstallCommand = new AsyncRelayCommand<string>(OnInstall);
             DownloadCommand = new AsyncRelayCommand<string>(OnDownload);
             SettingsCommand = new AsyncRelayCommand<string>(OnSettings);
+            ExecutionOptionsCommand = new AsyncRelayCommand(ExecutionOptionsAsync, CanExecutionOptions);
             LoraAdapters = new ObservableCollection<LoraAdapterModel>();
             LoraAdapters.CollectionChanged += (s, e) => ValidateSelection();
             InitializeComponent();
@@ -100,6 +103,7 @@ namespace Amuse.App.Controls
         public AsyncRelayCommand<string> InstallCommand { get; }
         public AsyncRelayCommand<string> DownloadCommand { get; }
         public AsyncRelayCommand<string> SettingsCommand { get; }
+        public AsyncRelayCommand ExecutionOptionsCommand { get; }
         public MemoryProfileModel[] MemoryModes { get; }
         public ObservableCollection<LoraAdapterModel> LoraAdapters { get; set; }
 
@@ -179,6 +183,12 @@ namespace Amuse.App.Controls
         {
             get { return _selectedQualityMode; }
             set { SetProperty(ref _selectedQualityMode, value); ValidateSelection(); }
+        }
+
+        public ExecutionOptionsModel SelectedExecutionOptions
+        {
+            get { return _selectedExecutionOptions; }
+            set { SetProperty(ref _selectedExecutionOptions, value); ValidateSelection(); }
         }
 
         public ListCollectionView DeviceCollectionView
@@ -287,6 +297,7 @@ namespace Amuse.App.Controls
             _currentUpscaler = SelectedUpscaler;
             _currentMemoryMode = SelectedMemoryMode.MemoryMode;
             _currentQualityMode = SelectedQualityMode;
+            _currentExecutionOptions = SelectedExecutionOptions;
 
             _currentControlNetEnabled = _isControlNetEnabled;
             _currentExtractorEnabled = _isExtractorEnabled;
@@ -303,6 +314,7 @@ namespace Amuse.App.Controls
                 LoraAdapterModel = _currentLoraEnabled ? _currentLora : default,
                 MemoryMode = _currentMemoryMode,
                 QualityMode = _currentQualityMode,
+                ExecutionOptions = _currentExecutionOptions,
                 ProcessType = GetProcessType(),
                 ViewType = ViewType
             };
@@ -338,6 +350,7 @@ namespace Amuse.App.Controls
             _currentExtractorEnabled = false;
             _currentLoraEnabled = false;
             _currentUpscalerEnabled = false;
+            _currentExecutionOptions = default;
 
             var pipeline = new PipelineModel
             {
@@ -363,6 +376,22 @@ namespace Amuse.App.Controls
                 || _currentExtractor is not null
                 || _currentLora is not null
                 || _currentUpscaler is not null;
+        }
+
+
+        private async Task ExecutionOptionsAsync()
+        {
+            var dialog = DialogService.GetDialog<ExecutionOptionsDialog>();
+            if (await dialog.ShowDialogAsync(SelectedExecutionOptions))
+            {
+                SelectedExecutionOptions = dialog.ExecutionOptions;
+            }
+        }
+
+
+        private bool CanExecutionOptions()
+        {
+            return _selectedModel != null;
         }
 
 
@@ -399,7 +428,8 @@ namespace Amuse.App.Controls
                 || _currentUpscaler != SelectedUpscaler
                 || _currentUpscalerEnabled != _isUpscalerEnabled
                 || _currentMemoryMode != SelectedMemoryMode?.MemoryMode
-                || _currentQualityMode != SelectedQualityMode;
+                || _currentQualityMode != SelectedQualityMode
+                || _currentExecutionOptions != SelectedExecutionOptions;
         }
 
 
@@ -627,6 +657,7 @@ namespace Amuse.App.Controls
             SelectedMemoryMode = _selectedModel.UserMemoryMode is null
                 ? MemoryModes.FirstOrDefault(x => x.MemoryMode == MemoryMode.Auto)
                 : MemoryModes.FirstOrDefault(x => x.MemoryMode == _selectedModel.UserMemoryMode.Value);
+            SelectedExecutionOptions = _selectedModel.UserExecutionOptions ?? new ExecutionOptionsModel();
         }
 
 

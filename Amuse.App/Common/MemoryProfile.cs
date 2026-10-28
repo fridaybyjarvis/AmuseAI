@@ -1,4 +1,5 @@
-﻿using TensorStack.WPF;
+﻿using System.Text.Json.Serialization;
+using TensorStack.WPF;
 
 namespace Amuse.App.Common
 {
@@ -14,6 +15,7 @@ namespace Amuse.App.Common
         public QualityMode QualityMode { get; set; }
         public int[] MemoryModes { get; set; }
 
+        [JsonIgnore]
         public string Recommended
         {
             get

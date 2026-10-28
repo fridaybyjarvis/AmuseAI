@@ -222,6 +222,12 @@
                 </ObjectDataProvider.MethodParameters>
             </ObjectDataProvider>
 
+            <ObjectDataProvider x:Key="AutoOption" MethodName="GetValues" ObjectType="{x:Type System:Enum}">
+                <ObjectDataProvider.MethodParameters>
+                    <x:Type TypeName="AmuseCommon:AutoOption"/>
+                </ObjectDataProvider.MethodParameters>
+            </ObjectDataProvider>
+
             <ObjectDataProvider x:Key="BackgroundMode" MethodName="GetValues" ObjectType="{x:Type System:Enum}">
                 <ObjectDataProvider.MethodParameters>
                     <x:Type TypeName="Extractors:BackgroundMode"/>

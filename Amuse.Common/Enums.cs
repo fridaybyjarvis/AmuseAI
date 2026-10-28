@@ -877,4 +877,17 @@ namespace Amuse.Common
         [Display(Name = "Nearest")]
         Nearest
     }
+
+
+    public enum AutoOption
+    {
+        [Display(Name = "Auto", ShortName = "auto")]
+        Auto = 0,
+
+        [Display(Name = "Enabled", ShortName = "on")]
+        Enabled = 1,
+
+        [Display(Name = "Disabled", ShortName = "off")]
+        Disabled = 2
+    }
 }

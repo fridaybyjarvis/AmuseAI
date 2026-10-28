@@ -156,9 +156,6 @@ namespace Amuse.App.Common
         public int InputVideoMaxCount { get; set; }
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
-        public bool IsFlashAttentionEnabled { get; set; } = true;
-
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
         public int LatentUpscaleSteps { get; set; } = 4;
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
@@ -223,7 +220,6 @@ namespace Amuse.App.Common
                 InputAudioMaxCount = InputAudioMaxCount,
                 InputImageMaxCount = InputImageMaxCount,
                 InputVideoMaxCount = InputVideoMaxCount,
-                IsFlashAttentionEnabled = IsFlashAttentionEnabled,
                 IsToolCallsSupported = IsToolCallsSupported
             };
         }
