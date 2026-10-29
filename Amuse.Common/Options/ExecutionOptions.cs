@@ -19,5 +19,9 @@
         public AutoOption ControlNetFlashAttention { get; set; }
         public AutoOption TextEncoderFlashAttention { get; set; }
         public bool IsSageAttentionEnabled { get; set; }
+
+        public bool IsOptimizeDeviceEnabled { get; set; }
+        public bool IsOptimizeChannelsEnabled { get; set; }
+        public bool IsDeviceQuantizationEnabled { get; set; }
     }
 }

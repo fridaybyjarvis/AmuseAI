@@ -607,9 +607,6 @@ namespace Amuse.App.Runtime
                 DeviceVendor = device.Vendor,
                 DeviceVendorIndex = device.VendorIndex,
                 DataType = model.BaseType,
-                IsOptimizeDeviceEnabled = Settings.IsOptimizeDeviceEnabled,
-                IsOptimizeChannelsEnabled = Settings.IsOptimizeChannelsEnabled,
-                IsDeviceQuantizationEnabled = Settings.IsDeviceQuantizationEnabled,
                 MemoryMode = GetMemoryMode(model.MemoryProfile),
                 QuantType = GetQuantizationType(),
                 ControlNet = ControlNetConfig(),
@@ -636,9 +633,6 @@ namespace Amuse.App.Runtime
                 DeviceBusId = device.PCIBusId,
                 DeviceVendor = device.Vendor,
                 DataType = model.BaseType,
-                IsOptimizeDeviceEnabled = Settings.IsOptimizeDeviceEnabled,
-                IsOptimizeChannelsEnabled = Settings.IsOptimizeChannelsEnabled,
-                IsDeviceQuantizationEnabled = Settings.IsDeviceQuantizationEnabled,
                 MemoryMode = MemoryModeType.Device,
                 QuantType = GetQuantizationType(),
                 LoraAdapters = GetLoraAdapters(),
@@ -785,6 +779,9 @@ namespace Amuse.App.Runtime
                 AutoEncoderFlashAttention = options.AutoEncoderFlashAttention,
                 TextEncoderFlashAttention = options.TextEncoderFlashAttention,
                 IsSageAttentionEnabled = options.IsSageAttentionEnabled,
+                IsDeviceQuantizationEnabled = options.IsDeviceQuantizationEnabled,
+                IsOptimizeDeviceEnabled = options.IsOptimizeDeviceEnabled,
+                IsOptimizeChannelsEnabled = options.IsOptimizeChannelsEnabled,
             };
         }
 

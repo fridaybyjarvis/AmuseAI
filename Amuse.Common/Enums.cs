@@ -45,10 +45,13 @@ namespace Amuse.Common
         [Display(Name = "Qwen Image Pipeline", ShortName = "Qwen", Description = "Qwen's image-generation family, with particular emphasis on instruction following, complex compositions, and text rendering. It is well suited to tasks where the model needs to understand detailed natural-language instructions rather than simply reproduce a visual style.")]
         QwenImagePipeline = 50,
 
-        [Display(Name ="MOSS Image", ShortName = "MOSS", Description = "MOSS-Image is a text-to-image model family from OpenMOSS that supports natural-language prompts, tag sequences, and JSON layouts for controlling text placement and object arrangement. \r\n")]
+        [Display(Name = "MOSS Image Pipeline", ShortName = "MOSS", Description = "MOSS-Image is a text-to-image model family from OpenMOSS that supports natural-language prompts, tag sequences, and JSON layouts for controlling text placement and object arrangement.")]
         MossImagePipeline = 51,
 
-        [Display(Name = "Iris Pipeline", ShortName = "Iris", Description = "The Iris pipeline uses a pixel-space generative model to produce high-resolution images directly from text prompts and serves as a versatile vision foundation for tasks such as depth estimation, image restoration, and upscaling without requiring a separate decoder.\r\n")]
+        [Display(Name = "Fibo2 Pipeline", ShortName = "Fibo2", Description = "Fibo 2.0 is the next generation of Bria's FIBO family. For the first time, image editing and image generation live in a single unified model. It keeps the foundation that made FIBO the most controllable open image model: training on long, structured captions through the Visual GenAI Language (VGL).")]
+        Fibo2Pipeline = 53,
+
+        [Display(Name = "Iris Pipeline", ShortName = "Iris", Description = "The Iris pipeline uses a pixel-space generative model to produce high-resolution images directly from text prompts and serves as a versatile vision foundation for tasks such as depth estimation, image restoration, and upscaling without requiring a separate decoder")]
         IrisPipeline = 54,
 
         [Display(Name = "SenseNova Pipeline", ShortName = "SenseNova", Description = "SenseNova is a multimodal AI pipeline designed to improve the quality, reliability, and controllability of visual generation and editing through advances in model architecture, data, prompting, training, and post-processing.")]

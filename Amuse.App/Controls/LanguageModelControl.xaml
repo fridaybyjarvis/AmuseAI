@@ -113,6 +113,9 @@
 
                 <DockPanel>
                     <TextBox DockPanel.Dock="Left" Text="{CommonControls:Localize Memory}" IsReadOnly="True" IsHitTestVisible="False" Width="60" FontStyle="Italic" FontSize="11" Opacity="0.7" Padding="4,2,0,0"/>
+                    <Button DockPanel.Dock="Right" Height="22" Width="22" Command="{Binding ExecutionOptionsCommand}" >
+                        <CommonControls:FontAwesome Icon="f013" Size="11" Opacity=".8" />
+                    </Button>
 
                     <!--MemoryMode-->
                     <ComboBox SelectedItem="{Binding SelectedQualityMode}" 

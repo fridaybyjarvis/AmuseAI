@@ -48,9 +48,9 @@ namespace Amuse.Host.HuggingFace
                 DeviceBusId = options.DeviceBusId,
                 DeviceId = options.DeviceId,
                 DeviceVendor = options.DeviceVendor,
-                IsDeviceQuantizationEnabled = options.IsDeviceQuantizationEnabled,
-                IsOptimizeDeviceEnabled = options.IsOptimizeDeviceEnabled,
-                IsOptimizeChannelsEnabled = options.IsOptimizeChannelsEnabled,
+                IsDeviceQuantizationEnabled = options.ExecutionOptions.IsDeviceQuantizationEnabled,
+                IsOptimizeDeviceEnabled = options.ExecutionOptions.IsOptimizeDeviceEnabled,
+                IsOptimizeChannelsEnabled = options.ExecutionOptions.IsOptimizeChannelsEnabled,
 
                 MemoryMode = options.MemoryMode.Cast<Amuse.Common.MemoryModeType, TensorStack.HuggingFace.MemoryModeType>(),
                 Pipeline = GetPipelineType(options).ToString(),

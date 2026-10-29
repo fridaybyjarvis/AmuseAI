@@ -284,8 +284,6 @@ namespace Amuse.App.Controls
 
         private async Task LoadAsync()
         {
-
-
             if (await IsDownloadingAsync())
                 return;
 
@@ -382,7 +380,7 @@ namespace Amuse.App.Controls
         private async Task ExecutionOptionsAsync()
         {
             var dialog = DialogService.GetDialog<ExecutionOptionsDialog>();
-            if (await dialog.ShowDialogAsync(SelectedExecutionOptions))
+            if (await dialog.ShowDialogAsync(_selectedModel.Backend, _selectedExecutionOptions))
             {
                 SelectedExecutionOptions = dialog.ExecutionOptions;
             }
@@ -741,6 +739,7 @@ namespace Amuse.App.Controls
 
             SelectedQualityMode = pipeline.QualityMode;
             SelectedMemoryMode = MemoryModes.FirstOrDefault(x => x.MemoryMode == pipeline.MemoryMode);
+            SelectedExecutionOptions = _selectedModel?.UserExecutionOptions ?? new ExecutionOptionsModel();
 
             if (IsUpscalerSupported)
             {

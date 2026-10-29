@@ -7,36 +7,53 @@
         xmlns:Controls="clr-namespace:Amuse.App.Controls"
         xmlns:CommonControls="clr-namespace:TensorStack.WPF.Controls;assembly=TensorStack.WPF"
         MinWidth="500"
-        MaxWidth="600"
+        MaxWidth="500"
         Title="Execution Options"
         Icon="/Images/Icon.ico"
         Style="{StaticResource {x:Type CommonControls:DialogControl}}">
     <DockPanel DataContext="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:ExecutionOptionsDialog}}}" Margin="15, 15, 15, 10">
 
-        <!--Save/Cancel/Errors-->
+        <!--Save/Cancel-->
         <DockPanel DockPanel.Dock="Bottom" Height="30" Margin="0,15,0,0">
             <UniformGrid DockPanel.Dock="Right" Columns="2" >
                 <Button Content="{CommonControls:Localize Save}" Command="{Binding SaveCommand}" Width="100" IsDefault="True"/>
                 <Button Content="{CommonControls:Localize Cancel}" Command="{Binding CancelCommand}"/>
             </UniformGrid>
-            <ItemsControl ItemsSource="{Binding Errors}">
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <TextBlock Text="{Binding}" Foreground="IndianRed" TextWrapping="Wrap" FontSize="11"/>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
+            <TextBlock/>
         </DockPanel>
 
-        <!--Main Content-->
-        <StackPanel>
+        <!--HuggingFace-->
+        <StackPanel Visibility="{Binding Backend, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter=HuggingFace}">
+
+            <!--Memory-->
+            <GroupBox Header="Memory" Margin="0, 0, 0, 0" Padding="5,2,5,5">
+                <StackPanel>
+                    <StackPanel Margin="0,4,0,0">
+                        <CheckBox Content="{CommonControls:Localize OptimizeDevice}" IsChecked="{Binding ExecutionOptions.IsOptimizeDeviceEnabled}"/>
+                        <TextBlock Text="Set device specific optimizations (matmul_precision, reduced_precision, allow_tf32 etc.)" FontSize="11" FontStyle="Italic" Opacity=".6" Margin="22,0,0,0"/>
+                    </StackPanel>
+                    <StackPanel Margin="0,4,0,0">
+                        <CheckBox Content="{CommonControls:Localize OptimizeChannels}" IsChecked="{Binding ExecutionOptions.IsOptimizeChannelsEnabled}"/>
+                        <TextBlock Text="Set the model channel order NCHW -> NHWC" FontSize="11" FontStyle="Italic" Opacity=".6" Margin="22,0,0,0"/>
+                    </StackPanel>
+                    <StackPanel Margin="0,4,0,0">
+                        <CheckBox Content="{CommonControls:Localize DeviceQuantization}" IsChecked="{Binding ExecutionOptions.IsDeviceQuantizationEnabled}"/>
+                        <TextBlock Text="Quantize model on GPU device" FontSize="11" FontStyle="Italic" Opacity=".6" Margin="22,0,0,0"/>
+                    </StackPanel>
+                </StackPanel>
+            </GroupBox>
+        </StackPanel>
+
+
+        <!--StableDiffusionCpp-->
+        <StackPanel Visibility="{Binding Backend, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter=StableDiffusionCpp}">
 
             <!--Memory-->
             <GroupBox Header="Memory" Margin="0, 0, 0, 0" Padding="5,2,5,5">
                 <UniformGrid Columns="3">
                     <StackPanel Margin="0, 6, 0, 0">
-                        <CheckBox Content="Segment Prefetch" IsChecked="{Binding ExecutionOptions.IsPrefetchEnabled}"  />
-                        <CheckBox Content="Segmented Compute" IsChecked="{Binding ExecutionOptions.IsSegmentedComputeEnabled}"  />
+                        <CheckBox Content="Segment Prefetch" IsChecked="{Binding ExecutionOptions.IsPrefetchEnabled}"/>
+                        <CheckBox Content="Segmented Compute" IsChecked="{Binding ExecutionOptions.IsSegmentedComputeEnabled}"/>
                     </StackPanel>
                     <StackPanel></StackPanel>
                     <StackPanel>
@@ -49,8 +66,12 @@
             <!--Flash Attention-->
             <GroupBox Header="Flash Attention" Margin="0, 10, 0, 0" Padding="5">
                 <StackPanel>
-                    <UniformGrid Columns="4">
+                    <UniformGrid Columns="5">
                         <StackPanel>
+                            <TextBlock Text="" Style="{StaticResource FieldTextBlockStyle}"/>
+                            <ComboBox ItemsSource="{Binding Source={StaticResource AutoOption}}" SelectedItem="{Binding SelectedFlashAttention}" Style="{StaticResource EnumComboBox}"/>
+                        </StackPanel>
+                        <StackPanel Margin="4,0,0,0">
                             <TextBlock Text="Diffusion" Style="{StaticResource FieldTextBlockStyle}"/>
                             <ComboBox ItemsSource="{Binding Source={StaticResource AutoOption}}" SelectedItem="{Binding ExecutionOptions.DiffusionFlashAttention}" Style="{StaticResource EnumComboBox}"/>
                         </StackPanel>
@@ -73,8 +94,12 @@
 
             <!--Conv-Direct-->
             <GroupBox Header="Conv-Direct" Margin="0, 10, 0, 0" Padding="5">
-                <UniformGrid Columns="4">
+                <UniformGrid Columns="5">
                     <StackPanel>
+                        <TextBlock Text="" Style="{StaticResource FieldTextBlockStyle}"/>
+                        <ComboBox ItemsSource="{Binding Source={StaticResource AutoOption}}" SelectedItem="{Binding SelectedConvDirect}" Style="{StaticResource EnumComboBox}"/>
+                    </StackPanel>
+                    <StackPanel Margin="4,0,0,0">
                         <TextBlock Text="Diffusion" Style="{StaticResource FieldTextBlockStyle}"/>
                         <ComboBox ItemsSource="{Binding Source={StaticResource AutoOption}}" SelectedItem="{Binding ExecutionOptions.DiffusionConvDirect}" Style="{StaticResource EnumComboBox}"/>
                     </StackPanel>
@@ -96,9 +121,9 @@
             <!--CPU Execution-->
             <GroupBox Header="CPU Execution" Margin="0, 10, 0, 0" Padding="5">
                 <UniformGrid Columns="3">
-                    <CheckBox Content="ControlNet" IsChecked="{Binding ExecutionOptions.IsControlNetCpuEnabled}"  />
-                    <CheckBox Content="TextEncoder" IsChecked="{Binding ExecutionOptions.IsTextEncoderCpuEnabled}" HorizontalAlignment="Center" />
-                    <CheckBox Content="AutoEncoder" IsChecked="{Binding ExecutionOptions.IsAutoEncoderCpuEnabled}" HorizontalAlignment="Right" />
+                    <CheckBox Content="AutoEncoder" IsChecked="{Binding ExecutionOptions.IsAutoEncoderCpuEnabled}"/>
+                    <CheckBox Content="TextEncoder" IsChecked="{Binding ExecutionOptions.IsTextEncoderCpuEnabled}" HorizontalAlignment="Center"/>
+                    <CheckBox Content="ControlNet" IsChecked="{Binding ExecutionOptions.IsControlNetCpuEnabled}" HorizontalAlignment="Right"/>
                 </UniformGrid>
             </GroupBox>
         </StackPanel>

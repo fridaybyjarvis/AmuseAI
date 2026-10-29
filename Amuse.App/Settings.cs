@@ -74,9 +74,6 @@ namespace Amuse.App
         public string VideoCodec { get; set; } = "mp4v";
         public bool IsLegacyDeviceDetection { get; set; }
         public bool IsServerDebugEnabled { get; set; } = false;
-        public bool IsOptimizeDeviceEnabled { get; set; } = false;
-        public bool IsOptimizeChannelsEnabled { get; set; } = false;
-        public bool IsDeviceQuantizationEnabled { get; set; } = true;
         public bool IsHistoryRecentItemsEnabled { get; set; } = true;
         public bool IsHistoryAutoSortEnabled { get; set; } = true;
         public bool IsDiffusionImagePreviewEnabled { get; set; } = true;

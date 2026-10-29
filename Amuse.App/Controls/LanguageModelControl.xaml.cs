@@ -29,10 +29,11 @@ namespace Amuse.App.Controls
         private DeviceModel _selectedDevice;
         private LanguageModel _selectedModel;
         private QualityProfileModel _selectedQualityMode;
+        private ExecutionOptionsModel _selectedExecutionOptions;
         private DeviceModel _currentDevice;
         private LanguageModel _currentModel;
         private QualityMode _currentQualityMode;
-
+        private ExecutionOptionsModel _currentExecutionOptions;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="LanguageModelControl"/> class.
@@ -45,6 +46,7 @@ namespace Amuse.App.Controls
             InstallCommand = new AsyncRelayCommand<string>(OnInstall);
             DownloadCommand = new AsyncRelayCommand<string>(OnDownload);
             SettingsCommand = new AsyncRelayCommand<string>(OnSettings);
+            ExecutionOptionsCommand = new AsyncRelayCommand(ExecutionOptionsAsync, CanExecutionOptions);
             InitializeComponent();
         }
 
@@ -60,6 +62,7 @@ namespace Amuse.App.Controls
         public AsyncRelayCommand<string> InstallCommand { get; }
         public AsyncRelayCommand<string> DownloadCommand { get; }
         public AsyncRelayCommand<string> SettingsCommand { get; }
+        public AsyncRelayCommand ExecutionOptionsCommand { get; }
         public ObservableCollection<QualityProfileModel> QualityModes { get; }
 
         public Settings Settings
@@ -116,6 +119,12 @@ namespace Amuse.App.Controls
             set { SetProperty(ref _selectedQualityMode, value); ValidateSelection(); }
         }
 
+        public ExecutionOptionsModel SelectedExecutionOptions
+        {
+            get { return _selectedExecutionOptions; }
+            set { SetProperty(ref _selectedExecutionOptions, value); ValidateSelection(); }
+        }
+
         public ListCollectionView DeviceCollectionView
         {
             get { return _deviceCollectionView; }
@@ -136,6 +145,7 @@ namespace Amuse.App.Controls
             _currentDevice = SelectedDevice;
             _currentModel = SelectedModel;
             _currentQualityMode = _selectedQualityMode.DetectedMode;
+            _currentExecutionOptions = _selectedExecutionOptions;
 
             var pipeline = new PipelineModel
             {
@@ -143,6 +153,7 @@ namespace Amuse.App.Controls
                 LanguageModel = _currentModel,
                 MemoryMode = _selectedQualityMode.MemoryMode,
                 QualityMode = _selectedQualityMode.DetectedMode,
+                ExecutionOptions = _currentExecutionOptions,
                 ProcessType = _processType,
                 ViewType = ViewType
             };
@@ -162,6 +173,7 @@ namespace Amuse.App.Controls
         {
             _currentModel = default;
             IsSelectionValid = false;
+            _currentExecutionOptions = default;
 
             var pipeline = new PipelineModel
             {
@@ -186,6 +198,22 @@ namespace Amuse.App.Controls
         }
 
 
+        private async Task ExecutionOptionsAsync()
+        {
+            var dialog = DialogService.GetDialog<ExecutionOptionsDialog>();
+            if (await dialog.ShowDialogAsync(_selectedModel.Backend, _selectedExecutionOptions))
+            {
+                SelectedExecutionOptions = dialog.ExecutionOptions;
+            }
+        }
+
+
+        private bool CanExecutionOptions()
+        {
+            return _selectedModel != null;
+        }
+
+
         private Task OnIsPipelineLoadedChanged()
         {
             ValidateSelection();
@@ -206,7 +234,8 @@ namespace Amuse.App.Controls
         {
             return _currentDevice != SelectedDevice
                 || _currentModel != SelectedModel
-                || _currentQualityMode != _selectedQualityMode?.DetectedMode;
+                || _currentQualityMode != _selectedQualityMode?.DetectedMode
+                || _currentExecutionOptions != SelectedExecutionOptions;
         }
 
 
@@ -294,6 +323,7 @@ namespace Amuse.App.Controls
 
             RefreshMemoryProfile();
             SelectedQualityMode = QualityModes.FirstOrDefault(x => x.QualityMode == _selectedModel.UserQualityMode);
+            SelectedExecutionOptions = _selectedModel.UserExecutionOptions ?? new ExecutionOptionsModel();
         }
 
 
@@ -352,6 +382,7 @@ namespace Amuse.App.Controls
             SelectedQualityMode = pipeline.MemoryMode == MemoryMode.Auto
                 ? QualityModes.FirstOrDefault(x => x.MemoryMode == MemoryMode.Auto)
                 : QualityModes.FirstOrDefault(x => x.QualityMode == pipeline.QualityMode);
+            SelectedExecutionOptions = _selectedModel?.UserExecutionOptions ?? new ExecutionOptionsModel();
             ValidateSelection();
         }
 

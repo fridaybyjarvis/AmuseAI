@@ -21,6 +21,9 @@ namespace Amuse.App.Common
         private AutoOption _autoEncoderFlashAttention;
         private AutoOption _textEncoderFlashAttention;
         private bool _isSageAttentionEnabled;
+        private bool _isOptimizeDeviceEnabled;
+        private bool _isOptimizeChannelsEnabled;
+        private bool _isDeviceQuantizationEnabled;
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
         public bool IsPrefetchEnabled
@@ -127,6 +130,27 @@ namespace Amuse.App.Common
             set { SetProperty(ref _isSageAttentionEnabled, value); }
         }
 
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+        public bool IsOptimizeDeviceEnabled
+        {
+            get { return _isOptimizeDeviceEnabled; }
+            set { SetProperty(ref _isOptimizeDeviceEnabled, value); }
+        }
+
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+        public bool IsOptimizeChannelsEnabled
+        {
+            get { return _isOptimizeChannelsEnabled; }
+            set { SetProperty(ref _isOptimizeChannelsEnabled, value); }
+        }
+
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+        public bool IsDeviceQuantizationEnabled
+        {
+            get { return _isDeviceQuantizationEnabled; }
+            set { SetProperty(ref _isDeviceQuantizationEnabled, value); }
+        }
+
 
         public ExecutionOptionsModel DeepClone()
         {
@@ -146,7 +170,10 @@ namespace Amuse.App.Common
                 DiffusionFlashAttention = _diffusionFlashAttention,
                 ControlNetFlashAttention = _controlNetFlashAttention,
                 TextEncoderFlashAttention = _textEncoderFlashAttention,
-                IsSageAttentionEnabled = _isSageAttentionEnabled
+                IsSageAttentionEnabled = _isSageAttentionEnabled,
+                IsOptimizeChannelsEnabled = _isOptimizeChannelsEnabled,
+                IsOptimizeDeviceEnabled = _isOptimizeDeviceEnabled,
+                IsDeviceQuantizationEnabled = _isDeviceQuantizationEnabled
             };
         }
     }

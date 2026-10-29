@@ -48,7 +48,7 @@ namespace Amuse.Host.StableDiffusionCpp
                 ConditioningCacheSize = 1,
                 FlashAttnMode = flashAttnMode,
                 ConvDirectMode = convDirectMode,
-                SageAttn = pipelineOptions.ExecutionOptions.IsSageAttentionEnabled
+                SageAttn = backendType == Pipeline.SDBackendType.CUDA && pipelineOptions.ExecutionOptions.IsSageAttentionEnabled
             };
 
 
@@ -152,7 +152,6 @@ namespace Amuse.Host.StableDiffusionCpp
                     ModelArgs = "qwen_image_zero_cond_t=true" // TODO: should be optional
                 };
             }
-
             if (pipelineOptions.Pipeline == PipelineType.LensPipeline
              || pipelineOptions.Pipeline == PipelineType.MossImagePipeline)
             {
@@ -191,6 +190,17 @@ namespace Amuse.Host.StableDiffusionCpp
                 return contextOptions with
                 {
                     ModelPath = pipelineOptions.CheckpointConfig.FullCheckpoint
+                };
+            }
+            if (pipelineOptions.Pipeline == PipelineType.Fibo2Pipeline)
+            {
+                return contextOptions with
+                {
+                    VaePath = pipelineOptions.CheckpointConfig.Vae,
+                    LlmPath = pipelineOptions.CheckpointConfig.TextEncoder,
+                    LlmVisionPath = pipelineOptions.CheckpointConfig.TextEncoder2,
+                    DiffusionModelPath = pipelineOptions.CheckpointConfig.Transformer,
+                    ControlNetPath = pipelineOptions.ControlNet?.Path
                 };
             }
             if (pipelineOptions.Pipeline == PipelineType.AnimaPipeline

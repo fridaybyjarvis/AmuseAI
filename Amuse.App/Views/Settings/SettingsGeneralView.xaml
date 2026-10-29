@@ -126,18 +126,6 @@
                                     <TextBlock Text="Show the pipeline status in a seperate console window" FontSize="11" FontStyle="Italic" Opacity=".6" Margin="22,0,0,0"/>
                                 </StackPanel>
                                 <StackPanel Margin="0,4,0,0">
-                                    <CheckBox Content="{CommonControls:Localize OptimizeDevice}" IsChecked="{Binding Settings.IsOptimizeDeviceEnabled}"  />
-                                    <TextBlock Text="Set device specific optimizations (matmul_precision, reduced_precision, allow_tf32 etc.)" FontSize="11" FontStyle="Italic" Opacity=".6" Margin="22,0,0,0"/>
-                                </StackPanel>
-                                <StackPanel Margin="0,4,0,0">
-                                    <CheckBox Content="{CommonControls:Localize OptimizeChannels}" IsChecked="{Binding Settings.IsOptimizeChannelsEnabled}" />
-                                    <TextBlock Text="Set the model channel order NCHW -> NHWC" FontSize="11" FontStyle="Italic" Opacity=".6" Margin="22,0,0,0"/>
-                                </StackPanel>
-                                <StackPanel Margin="0,4,0,0">
-                                    <CheckBox Content="{CommonControls:Localize DeviceQuantization}" IsChecked="{Binding Settings.IsDeviceQuantizationEnabled}" />
-                                    <TextBlock Text="Quantize model on GPU device" FontSize="11" FontStyle="Italic" Opacity=".6" Margin="22,0,0,0"/>
-                                </StackPanel>
-                                <StackPanel Margin="0,4,0,0">
                                     <CheckBox Content="{CommonControls:Localize DiffusionStepPreview}" IsChecked="{Binding Settings.IsDiffusionImagePreviewEnabled}" />
                                     <TextBlock Text="Enable step preview images" FontSize="11" FontStyle="Italic" Opacity=".6" Margin="22,0,0,0"/>
                                 </StackPanel>
