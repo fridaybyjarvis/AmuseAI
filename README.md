@@ -40,6 +40,7 @@ Local AI image, video, audio and text.
 - LLaDA Image
 - SenseNova U1.5
 - MOSS-Image
+- Fibo 2.0
 
 ## Video Pipelines
 - Wan 2.2
